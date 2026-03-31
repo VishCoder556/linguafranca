@@ -1,14 +1,17 @@
+#ifndef I_TOKENIZER
+#define I_TOKENIZER
+
 typedef enum {
-    TOKEN_ID,
-    TOKEN_EQ,
-    TOKEN_INT,
-    TOKEN_LB,
-    TOKEN_RB,
-    TOKEN_LP,
-    TOKEN_RP,
-    TOKEN_STRING,
+    I_TOKEN_ID,
+    I_TOKEN_EQ,
+    I_TOKEN_INT,
+    I_TOKEN_LB,
+    I_TOKEN_RB,
+    I_TOKEN_LP,
+    I_TOKEN_RP,
+    I_TOKEN_STRING,
     
-    TOKEN_MAX, // Marker to know how many tokens we have
+    I_TOKEN_MAX, // Marker to know how many tokens we have
     // Keep adding on eventually
 }I_TokenType;
 
@@ -38,3 +41,5 @@ typedef struct {
 I_Tokenizer *I_tokenizer_init(char *input_file, char *buffer);
 
 char I_tokenizer_token(I_Tokenizer *tokenizer);
+
+#endif

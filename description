@@ -1,4 +1,4 @@
-NEW FRANCUA LINGUA LANGUAGE
+NEW sCRIPTING LANGUAGE
 
 .i -- I programming language
     This programming language is very similar to C. However, it is meant to easily be embedded into your scripts. It can be compiled into an executable or interpreted on the spot (neither are implemented yet)

@@ -4,7 +4,7 @@
 #include <stdlib.h>
 
 #include "include/tokenizer.h"
-
+#include "include/parser.h"
 
 char *I_expect_arg(int *argused, int argc, char ***argv){
 // Pass by reference to make sure we change the main function
@@ -48,8 +48,11 @@ int main(int argc, char **argv){
     while (I_tokenizer_token(tokenizer) == 0){
     };
     free(tokenizer->buffer);
-    free(tokenizer->tokens);
+
+    I_Parser *parser = I_parser_init(tokenizer);
     free(tokenizer);
+    free(parser->tokens);
+    free(parser);
 
     fclose(file);
     return 0;

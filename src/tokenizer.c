@@ -47,15 +47,15 @@ char *I_char_to_string(char c){
 char I_tokenizer_token(I_Tokenizer *tokenizer){
     char c = tokenizer->buffer[tokenizer->cur];
 
-    assert(TOKEN_MAX == 8 && "Exhaustive handling of tokens -- please implement token here");
+    assert(I_TOKEN_MAX == 8 && "Exhaustive handling of tokens -- please implement token here");
     // Assertion style copied from Tsoding Daily in his programming language Porth (P.S. you should check it out);
 
     switch (c){
-        case '=': I_tokenizer_append(tokenizer, TOKEN_EQ, I_tokenizer_advance(tokenizer)); break;
-        case '{': I_tokenizer_append(tokenizer, TOKEN_LB, I_tokenizer_advance(tokenizer)); break;
-        case '}': I_tokenizer_append(tokenizer, TOKEN_RB, I_tokenizer_advance(tokenizer)); break;
-        case '(': I_tokenizer_append(tokenizer, TOKEN_LP, I_tokenizer_advance(tokenizer)); break;
-        case ')': I_tokenizer_append(tokenizer, TOKEN_RP, I_tokenizer_advance(tokenizer)); break;
+        case '=': I_tokenizer_append(tokenizer, I_TOKEN_EQ, I_tokenizer_advance(tokenizer)); break;
+        case '{': I_tokenizer_append(tokenizer, I_TOKEN_LB, I_tokenizer_advance(tokenizer)); break;
+        case '}': I_tokenizer_append(tokenizer, I_TOKEN_RB, I_tokenizer_advance(tokenizer)); break;
+        case '(': I_tokenizer_append(tokenizer, I_TOKEN_LP, I_tokenizer_advance(tokenizer)); break;
+        case ')': I_tokenizer_append(tokenizer, I_TOKEN_RP, I_tokenizer_advance(tokenizer)); break;
         case '\n': tokenizer->row++; tokenizer->col = 0; tokenizer->cur++; goto skip_increment;
         case ' ': I_tokenizer_peek(tokenizer);
         case '\"':
@@ -75,7 +75,7 @@ char I_tokenizer_token(I_Tokenizer *tokenizer){
             if (I_tokenizer_peek(tokenizer) != '\"'){
                 assert(0 && "Unreachable code");
             }
-            I_tokenizer_append(tokenizer, TOKEN_STRING, value);
+            I_tokenizer_append(tokenizer, I_TOKEN_STRING, value);
             break;
         case '\t': break;
         case '\0': return -1;
@@ -94,7 +94,7 @@ char I_tokenizer_token(I_Tokenizer *tokenizer){
                     c = tokenizer->buffer[tokenizer->cur];
                 }
                 I_tokenizer_peek(tokenizer);
-                I_tokenizer_append(tokenizer, TOKEN_ID, value);
+                I_tokenizer_append(tokenizer, I_TOKEN_ID, value);
                 break;
             }else if (isnumber(c)){
                 int valuecap = 100;
@@ -111,7 +111,7 @@ char I_tokenizer_token(I_Tokenizer *tokenizer){
                     c = tokenizer->buffer[tokenizer->cur];
                 }
                 I_tokenizer_peek(tokenizer);
-                I_tokenizer_append(tokenizer, TOKEN_INT, value);
+                I_tokenizer_append(tokenizer, I_TOKEN_INT, value);
                 break;
             }
     }
