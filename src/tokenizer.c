@@ -47,7 +47,7 @@ char *I_char_to_string(char c){
 char I_tokenizer_token(I_Tokenizer *tokenizer){
     char c = tokenizer->buffer[tokenizer->cur];
 
-    assert(TOKEN_MAX == 7 && "Exhaustive handling of tokens -- please implement token here");
+    assert(TOKEN_MAX == 8 && "Exhaustive handling of tokens -- please implement token here");
     // Assertion style copied from Tsoding Daily in his programming language Porth (P.S. you should check it out);
 
     switch (c){
@@ -59,8 +59,23 @@ char I_tokenizer_token(I_Tokenizer *tokenizer){
         case '\n': tokenizer->row++; tokenizer->col = 0; tokenizer->cur++; goto skip_increment;
         case ' ': I_tokenizer_peek(tokenizer);
         case '\"':
-            ;
             I_tokenizer_peek(tokenizer);
+            int valuecap = 100;
+            char *value = malloc(valuecap);
+            int len = 0;
+            while (c != '\"'){
+                if (len >= valuecap){
+                    valuecap += 5;
+                    value = realloc(value, valuecap);
+                }
+                value[len++] = c;
+                I_tokenizer_peek(tokenizer);
+                c = tokenizer->buffer[tokenizer->cur];
+            }
+            if (I_tokenizer_peek(tokenizer) != '\"'){
+                assert(0 && "Unreachable code");
+            }
+            I_tokenizer_append(tokenizer, TOKEN_STRING, value);
             break;
         case '\t': break;
         case '\0': return -1;

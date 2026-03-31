@@ -6,6 +6,7 @@ typedef enum {
     TOKEN_RB,
     TOKEN_LP,
     TOKEN_RP,
+    TOKEN_STRING,
     
     TOKEN_MAX, // Marker to know how many tokens we have
     // Keep adding on eventually
