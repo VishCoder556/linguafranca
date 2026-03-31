@@ -1,0 +1,37 @@
+NEW FRANCUA LINGUA LANGUAGE
+
+.fl -- Francua Lingua
+
+
+%include "std"
+
+int a = 5
+int b = 10
+exit(a + b)
+
+------------------
+// In C, you would need to map the top-level declarations into a `main` function. The following also applies for Rust and many other languages
+#include <stdio.h>
+
+int main(){
+    int a = 5;
+    int b = 10;
+    return a + b;
+}
+
+
+------------------
+
+// You might have to include multiple files for the Rust backend
+use std:process;
+fn main(){
+    let a : i32 = 5;
+    let b : i32 = 10;
+    process::exit(a + b);
+}
+
+------------------
+# types are ignored in Python mode
+a = 5
+b = 10
+exit(a + b)
