@@ -6,34 +6,63 @@
 
 #include "include/tokenizer.h"
 
-Tokenizer *tokenizer_init(char *input_file, char *buffer){
-    Tokenizer *tokenizer = malloc(sizeof(Tokenizer));
+I_Tokenizer *I_tokenizer_init(char *input_file, char *buffer){
+    I_Tokenizer *tokenizer = malloc(sizeof(I_Tokenizer));
     tokenizer->input_file = input_file;
     tokenizer->buffer = buffer;
+    tokenizer->bufferlen = strlen(buffer);
     tokenizer->cur = 0;
     tokenizer->col = 0;
     tokenizer->row = 0;
     tokenizer->tokencap = 10; // For now
     tokenizer->tokenlen = 0;
-    tokenizer->tokens = malloc(sizeof(Token) * tokenizer->tokencap);
+    tokenizer->tokens = malloc(sizeof(I_Token) * tokenizer->tokencap);
     return tokenizer;
 }
 
-void tokenizer_append(Tokenizer *tokenizer, TokenType type, char *value){
-    tokenizer->tokens[tokenizer->tokenlen++] = (Token){type, value};
+void I_tokenizer_append(I_Tokenizer *tokenizer, I_TokenType type, char *value){
+    tokenizer->tokens[tokenizer->tokenlen++] = (I_Token){type, value};
 }
 
-char tokenizer_token(Tokenizer *tokenizer){
+char I_tokenizer_peek(I_Tokenizer *tokenizer){
+    if (tokenizer->cur <= tokenizer->bufferlen){
+        char c = tokenizer->buffer[tokenizer->cur];
+        tokenizer->cur++;
+        tokenizer->col++;
+        return c;
+    }
+    return '\0';
+}
+
+char *I_char_to_string(char c){
+    char *string = malloc(2);
+    string[0] = c;
+    string[1] = '\0';
+    return string;
+}
+
+#define I_tokenizer_advance(tokenizer)  I_char_to_string(I_tokenizer_peek(tokenizer))
+// Get the current character as a string and advance
+
+char I_tokenizer_token(I_Tokenizer *tokenizer){
     char c = tokenizer->buffer[tokenizer->cur];
 
-    assert(TOKEN_MAX == 3 && "Exhaustive handling of tokens -- please implement token here");
+    assert(TOKEN_MAX == 7 && "Exhaustive handling of tokens -- please implement token here");
     // Assertion style copied from Tsoding Daily in his programming language Porth (P.S. you should check it out);
 
     switch (c){
-        case '=': tokenizer_append(tokenizer, TOKEN_EQ, "="); break;
-        case '\n': tokenizer->row++; tokenizer->col = 0; goto end;
-        case ' ': goto increment;
-        case '\t': goto increment;
+        case '=': I_tokenizer_append(tokenizer, TOKEN_EQ, I_tokenizer_advance(tokenizer)); break;
+        case '{': I_tokenizer_append(tokenizer, TOKEN_LB, I_tokenizer_advance(tokenizer)); break;
+        case '}': I_tokenizer_append(tokenizer, TOKEN_RB, I_tokenizer_advance(tokenizer)); break;
+        case '(': I_tokenizer_append(tokenizer, TOKEN_LP, I_tokenizer_advance(tokenizer)); break;
+        case ')': I_tokenizer_append(tokenizer, TOKEN_RP, I_tokenizer_advance(tokenizer)); break;
+        case '\n': tokenizer->row++; tokenizer->col = 0; tokenizer->cur++; goto skip_increment;
+        case ' ': I_tokenizer_peek(tokenizer);
+        case '\"':
+            ;
+            I_tokenizer_peek(tokenizer);
+            break;
+        case '\t': break;
         case '\0': return -1;
         default:
             if (isalpha(c)){
@@ -46,11 +75,12 @@ char tokenizer_token(Tokenizer *tokenizer){
                         value = realloc(value, valuecap);
                     }
                     value[len++] = c;
-                    tokenizer->cur++; tokenizer->col++;
+                    I_tokenizer_peek(tokenizer);
                     c = tokenizer->buffer[tokenizer->cur];
                 }
-                tokenizer_append(tokenizer, TOKEN_ID, value);
-                goto increment;
+                I_tokenizer_peek(tokenizer);
+                I_tokenizer_append(tokenizer, TOKEN_ID, value);
+                break;
             }else if (isnumber(c)){
                 int valuecap = 100;
                 char *value = malloc(valuecap);
@@ -61,16 +91,15 @@ char tokenizer_token(Tokenizer *tokenizer){
                         value = realloc(value, valuecap);
                     }
                     value[len++] = c;
-                    tokenizer->cur++; tokenizer->col++;
+                    I_tokenizer_peek(tokenizer);
+                    tokenizer->col++;
                     c = tokenizer->buffer[tokenizer->cur];
                 }
-                tokenizer_append(tokenizer, TOKEN_INT, value);
-                goto increment;
+                I_tokenizer_peek(tokenizer);
+                I_tokenizer_append(tokenizer, TOKEN_INT, value);
+                break;
             }
     }
-increment:
-    tokenizer->cur++;
-    tokenizer->col++;
-end:
+skip_increment:
     return 0;
 }

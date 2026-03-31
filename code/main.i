@@ -1,2 +1,3 @@
-a = 5
-b = 10
+int main(){
+    print("Hello World\n")
+}

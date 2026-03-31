@@ -6,7 +6,7 @@
 #include "include/tokenizer.h"
 
 
-char *expect_arg(int *argused, int argc, char ***argv){
+char *I_expect_arg(int *argused, int argc, char ***argv){
 // Pass by reference to make sure we change the main function
     char *str = **argv;
     (*(argv))++;
@@ -22,9 +22,9 @@ int main(int argc, char **argv){
     char *output_file = "";
     int i = 0;
     while (*argv) {
-        char *arg = expect_arg(&i, argc, &argv);
+        char *arg = I_expect_arg(&i, argc, &argv);
         if (strcmp(arg, "-o") == 0){
-            output_file = expect_arg(&i, argc, &argv);
+            output_file = I_expect_arg(&i, argc, &argv);
         }else {
             input_file = arg;
         }
@@ -44,8 +44,8 @@ int main(int argc, char **argv){
     fread(buffer, 1, count, file);
     buffer[count] = '\0';
 
-    Tokenizer *tokenizer = tokenizer_init(input_file, buffer);
-    while (tokenizer_token(tokenizer) == 0){
+    I_Tokenizer *tokenizer = I_tokenizer_init(input_file, buffer);
+    while (I_tokenizer_token(tokenizer) == 0){
     };
     free(tokenizer->buffer);
     free(tokenizer->tokens);

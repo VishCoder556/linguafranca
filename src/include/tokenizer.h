@@ -2,23 +2,27 @@ typedef enum {
     TOKEN_ID,
     TOKEN_EQ,
     TOKEN_INT,
-
+    TOKEN_LB,
+    TOKEN_RB,
+    TOKEN_LP,
+    TOKEN_RP,
     
     TOKEN_MAX, // Marker to know how many tokens we have
     // Keep adding on eventually
-}TokenType;
+}I_TokenType;
 
 typedef struct {
-    TokenType type;
+    I_TokenType type;
     char *value;
-}Token;
+}I_Token;
 
 typedef struct {
     char *input_file;
     char *buffer;
+    int bufferlen;
 
 
-    Token *tokens;
+    I_Token *tokens;
     int tokencap;
     int tokenlen;
 
@@ -27,9 +31,9 @@ typedef struct {
 
     int col;
     int row;
-}Tokenizer;
+}I_Tokenizer;
 
 
-Tokenizer *tokenizer_init(char *input_file, char *buffer);
+I_Tokenizer *I_tokenizer_init(char *input_file, char *buffer);
 
-char tokenizer_token(Tokenizer *tokenizer);
+char I_tokenizer_token(I_Tokenizer *tokenizer);
