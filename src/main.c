@@ -3,7 +3,7 @@
 #include <string.h>
 #include <stdlib.h>
 
-#include "tokenizer.h"
+#include "include/tokenizer.h"
 
 
 char *expect_arg(int *argused, int argc, char ***argv){
@@ -44,7 +44,12 @@ int main(int argc, char **argv){
     fread(buffer, 1, count, file);
     buffer[count] = '\0';
 
-    ;
+    Tokenizer *tokenizer = tokenizer_init(input_file, buffer);
+    while (tokenizer_token(tokenizer) == 0){
+    };
+    free(tokenizer->buffer);
+    free(tokenizer->tokens);
+    free(tokenizer);
 
     fclose(file);
     return 0;
