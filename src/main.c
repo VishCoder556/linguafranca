@@ -5,6 +5,7 @@
 
 #include "include/tokenizer.h"
 #include "include/parser.h"
+#include "include/exec.h"
 
 char *I_expect_arg(int *argused, int argc, char ***argv){
 // Pass by reference to make sure we change the main function
@@ -56,6 +57,12 @@ int main(int argc, char **argv){
     }
     free(tokenizer);
     free(parser->tokens);
+
+    I_Runtime *runtime = I_runtime_init(parser);
+    while (I_runtime_setup(runtime) != 0){
+
+    };
+
     free(parser);
 
     fclose(file);

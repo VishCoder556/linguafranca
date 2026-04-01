@@ -19,3 +19,24 @@ if (prefix##_head == NULL){ \
     prefix##_len++; \
 
 #define AppendToLinkedList(parent, type, ...) AppendToLinkedListPrefix(parent.type, type, __VA_ARGS__)
+
+#define SetLinkedList(ll1, ll2, type) \
+    ll1.type##_head = ll2.type##_head; \
+    ll1.type##_tail = ll2.type##_tail; \
+    ll1.type##_len = ll2.type##_len;
+
+#define GetLinkedListHead(ll, type) ll.type##_head
+#define GetLinkedListTail(ll, type) ll.type##_tail
+#define GetLinkedListLen(ll, type) ll.type##_len
+#define GetLinkedListNextElem(ll) ll->next
+
+
+// Go through each element in a linked list and free them
+#define FreeLinkedList(ll, type) \
+    type *last_elem == ll.type##_head; \
+    for (int i=0; i<ll.type##_len; i++){ \
+        type *old = last_elem; \
+        last_elem = last_elem->next; \
+        free(old); \
+    }; \
+    free(last_elem);
