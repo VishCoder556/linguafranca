@@ -37,6 +37,7 @@ typedef struct {
     union {
         I_AST_Statement_Funcall funcall;
     }data;
+    struct I_AST_Statement *next;
 }I_AST_Statement;
 
 typedef enum {
@@ -47,6 +48,7 @@ typedef enum {
 typedef struct {
     char *name; // TODO: Implement more types
     I_Type return_type;
+    LinkedList(I_AST_Statement);
 }I_AST_Body_Funcdef;
 
 typedef struct {

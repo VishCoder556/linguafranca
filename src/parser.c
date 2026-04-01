@@ -74,11 +74,6 @@ I_AST_Expr I_parser_parse_expr(I_Parser *parser){
     I_parser_peek(parser);
     return expr;
 }
-
-I_AST_Expr *I_parser_next_ast_expr(I_Parser *parser, I_AST_Statement stmnt){
-    AppendToLinkedList(stmnt.data.funcall, I_AST_Expr);
-}
-
 I_AST_Statement I_parser_parse_statement(I_Parser *parser){
     I_AST_Statement stmnt = (I_AST_Statement){0};
     I_Token tok = parser->tokens[parser->cur];
@@ -86,14 +81,16 @@ I_AST_Statement I_parser_parse_statement(I_Parser *parser){
     stmnt.type = I_AST_STATEMENT_MAX;
     if (tok.type == I_TOKEN_ID){
         InitLinkedList(stmnt.data.funcall, I_AST_Expr);
+        stmnt.type = I_AST_STATEMENT_FUNCALL;
+        stmnt.data.funcall.name = tok.value;
         I_parser_peek(parser);
         I_parser_expect(parser, I_TOKEN_LP); // Expect funcall
         while (parser->tokens[parser->cur].type != I_TOKEN_RP){
-            I_AST_Expr *next_expr = I_parser_next_ast_expr(parser, stmnt);
-            *next_expr = I_parser_parse_expr(parser);
-            if (next_expr->type == I_AST_EXPR_MAX){
+            I_AST_Expr expr = I_parser_parse_expr(parser);
+            if (expr.type == I_AST_EXPR_MAX){
                 assert(0 && "Something weird happened here || an error in the expr parsing that is apparent in the function statement argument parsing");
             }
+            AppendToLinkedList(stmnt.data.funcall, I_AST_Expr, expr);
         };
         I_parser_expect(parser, I_TOKEN_RP);
     }
@@ -123,8 +120,15 @@ char I_parser_parse_body(I_Parser *parser){
             // TODO: Add function arguments
             I_parser_expect(parser, I_TOKEN_RP);
             I_parser_expect(parser, I_TOKEN_LB);
+
+
+            InitLinkedList(next_elem->data.funcdef, I_AST_Statement);
             while (parser->tokens[parser->cur].type != I_TOKEN_RB){
-                I_parser_parse_statement(parser);
+                I_AST_Statement stmnt = I_parser_parse_statement(parser);
+                if (stmnt.type == I_AST_STATEMENT_MAX){
+                    assert(0 && "Something weird happened here || an error in the statement parsing that is apparent in the function definition body parsing");
+                }
+                AppendToLinkedList(next_elem->data.funcdef, I_AST_Statement, stmnt);
                 // Evaluate loop
             }
             I_parser_expect(parser, I_TOKEN_RB);
