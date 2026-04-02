@@ -6,6 +6,7 @@
 #include "include/tokenizer.h"
 #include "include/parser.h"
 #include "include/exec.h"
+#include "include/i.h"
 
 char *I_expect_arg(int *argused, int argc, char ***argv){
 // Pass by reference to make sure we change the main function
@@ -41,46 +42,12 @@ int main(int argc, char **argv){
             input_file = arg;
         }
     }
-    FILE *file = fopen(input_file, "r");
-    if (file == NULL){
-        fprintf(stderr, "ERROR: Input File '%s' does not exist\n", input_file);
-        exit(-1);
-    };
-
-    fseek(file, 0, SEEK_END);
-    long count = ftell(file);
-    fseek(file, 0, SEEK_SET);
-
-
-    char *buffer = malloc(count + 1);
-    fread(buffer, 1, count, file);
-    buffer[count] = '\0';
-
-    I_Tokenizer *tokenizer = I_tokenizer_init(input_file, buffer);
-    while (I_tokenizer_token(tokenizer) == 0){
-    };
-    free(tokenizer->buffer);
-
-    I_Parser *parser = I_parser_init(tokenizer);
-
-    while (I_parser_parse_body(parser) != 0){
-
-    }
-    free(tokenizer);
-    free(parser->tokens);
-
-    I_Runtime *runtime = I_runtime_init(parser);
-    while (I_runtime_setup(runtime) != 0){
-
-    };
+    I_Runtime *runtime = I_runtime_from_file(input_file);
     I_runtime_add_function(runtime, "print", _print);
 
 
     I_Runtime_Function *func = I_runtime_find_function(runtime, "main");
     I_runtime_execute_function(runtime, func);
 
-    free(parser);
-
-    fclose(file);
     return 0;
 }
