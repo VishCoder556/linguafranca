@@ -65,10 +65,13 @@ I_AST_Body *I_parser_next_ast_body(I_Parser *parser){
 I_AST_Expr I_parser_parse_expr(I_Parser *parser){
     I_AST_Expr expr = (I_AST_Expr){0};
     I_Token tok = parser->tokens[parser->cur];
-    assert(I_AST_EXPR_MAX == 1 && "Exhaustive handling of AST statements -- please implement how tokens can be parsed to the AST");
+    assert(I_AST_EXPR_MAX == 2 && "Exhaustive handling of AST exprs -- please implement how tokens can be parsed to the AST");
     expr.type = I_AST_EXPR_MAX;
     if (tok.type == I_TOKEN_STRING){
         expr.type = I_AST_EXPR_STRING;
+        expr.data.arg.value = tok.value;
+    }else if(tok.type == I_TOKEN_INT){
+        expr.type = I_AST_EXPR_INT;
         expr.data.arg.value = tok.value;
     }
     I_parser_peek(parser);
@@ -113,6 +116,7 @@ char I_parser_parse_body(I_Parser *parser){
             next_elem->type = I_AST_BODY_FUNCDEF;
             next_elem->data.funcdef.return_type = type;
             I_parser_peek(parser);
+            token = parser->tokens[parser->cur];
             I_parser_expect(parser, I_TOKEN_ID);
             next_elem->data.funcdef.name = token.value; // Function name
             I_parser_expect(parser, I_TOKEN_LP);

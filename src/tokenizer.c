@@ -21,6 +21,10 @@ I_Tokenizer *I_tokenizer_init(char *input_file, char *buffer){
 }
 
 void I_tokenizer_append(I_Tokenizer *tokenizer, I_TokenType type, char *value){
+    if (tokenizer->tokenlen >= tokenizer->tokencap){
+        tokenizer->tokencap += 10;
+        tokenizer->tokens = realloc(tokenizer->tokens, sizeof(I_Token) * tokenizer->tokencap);
+    }
     tokenizer->tokens[tokenizer->tokenlen++] = (I_Token){type, value};
 }
 

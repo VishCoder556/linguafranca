@@ -30,6 +30,8 @@ if (prefix##_head == NULL){ \
 #define GetLinkedListLen(ll, type) ll.type##_len
 #define GetLinkedListNextElem(ll) ll->next
 
+#define PopTopLinkedList(parent, type) GetLinkedListHead(parent, type) = GetLinkedListNextElem(GetLinkedListHead(parent, type)); GetLinkedListLen(parent, type)--;
+
 
 // Go through each element in a linked list and free them
 #define FreeLinkedList(ll, type) \

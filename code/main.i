@@ -1,3 +1,4 @@
 int main(){
-    print("Hello World")
+    print("Hello")
+    ret(5)
 }

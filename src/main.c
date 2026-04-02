@@ -18,6 +18,13 @@ char *I_expect_arg(int *argused, int argc, char ***argv){
     return str;
 }
 
+void _print(struct I_Runtime *runtime){
+    printf("%s\n", I_runtime_pop_string(runtime));
+}
+void _ret(struct I_Runtime *runtime){
+    printf("%d\n", I_runtime_pop_int(runtime));
+}
+
 int main(int argc, char **argv){
     char *input_file = "";
     char *output_file = "";
@@ -62,6 +69,12 @@ int main(int argc, char **argv){
     while (I_runtime_setup(runtime) != 0){
 
     };
+    I_runtime_add_function(runtime, "print", _print);
+    I_runtime_add_function(runtime, "ret", _ret);
+
+
+    I_Runtime_Function *func = I_runtime_find_function(runtime, "main");
+    I_runtime_execute_function(runtime, func);
 
     free(parser);
 

@@ -24,11 +24,31 @@ typedef enum {
 typedef struct {
     I_Runtime_ArgType type;
     void *ptr;
+    // Yes, void* as a generic isn't good, but it works for now
+    struct I_Runtime_Arg *next;
 }I_Runtime_Arg;
 
 
 typedef struct {
     LinkedList(I_AST_Statement);
+}I_Runtime_Function_Native;
+
+struct I_Runtime;
+typedef struct {
+    void (*callback)(struct I_Runtime *runtime);
+}I_Runtime_Function_C;
+
+typedef enum {
+    I_RUNTIME_FUNCTION_C,
+    I_RUNTIME_FUNCTION_NATIVE
+}I_Runtime_FunctionType;
+typedef struct {
+    I_Runtime_FunctionType type;
+    char *name;
+    union {
+        I_Runtime_Function_Native native;
+        I_Runtime_Function_C c;
+    }data;
     struct I_Runtime_Function *next;
 }I_Runtime_Function;
 
@@ -48,4 +68,15 @@ I_Runtime *I_runtime_init(I_Parser *parser);
 // I_runtime_setup gets the runtime ready for execution
 char I_runtime_setup(I_Runtime *runtime);
 
+I_Runtime_Function *I_runtime_find_function(I_Runtime *runtime, char *name);
+
+
+void I_runtime_execute_function(I_Runtime *runtime, I_Runtime_Function *func);
+
+
+void I_runtime_add_function(I_Runtime *runtime, char *name, void (*callback)(struct I_Runtime *runtime));
+
+char *I_runtime_pop_string(I_Runtime *runtime);
+
+int I_runtime_pop_int(I_Runtime *runtime);
 #endif

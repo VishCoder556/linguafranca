@@ -6,6 +6,7 @@
 
 typedef enum {
     I_AST_EXPR_STRING,
+    I_AST_EXPR_INT,
     I_AST_EXPR_MAX
 }I_AST_ExprType;
 
